@@ -1,0 +1,4 @@
+node_modules/
+
+# because i don't feel like i need it
+package-lock.json

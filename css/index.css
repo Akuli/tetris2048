@@ -1,0 +1,74 @@
+body {
+    background-color: #ffed97;
+}
+
+#game-container-container {
+    display: inline-block;
+}
+
+#game-container {
+    padding: 5px;
+    border-radius: 10px;
+    display: grid;
+    grid-auto-rows: 35px;
+    grid-auto-columns: 35px;
+    background-color: #bbb;
+    grid-gap: 2px;
+}
+
+#score {
+    font-size: 20px;
+}
+
+.square {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #666;
+    border-radius: 3px;
+}
+
+.square > div {
+    font-size: 20px;
+}
+
+.square.empty {
+    background-color: #ccc;
+    border: 1px transparent;
+}
+
+.square.color0 { background-color: red; }
+.square.color1 { background-color: #66f; }
+.square.color2 { background-color: yellow; }
+.square.color3 { background-color: magenta; }
+.square.color4 { background-color: white; }
+.square.color5 { background-color: green; }
+.square.color6 { background-color: cyan; }
+
+#status-messages-container {
+    position: relative;
+    height: 0px;
+    bottom: -100px;
+}
+
+#status-messages {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100px;
+    z-index: 3;
+}
+
+#status-messages.showing {
+    background-image: radial-gradient(white, transparent);
+}
+
+#big-status {
+    font-size: 30px;   /* big, but shouldn't be wider than game-container */
+    font-weight: bold;
+}
+
+#small-status {
+    font-size: 20px;
+}
