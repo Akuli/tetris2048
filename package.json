@@ -1,0 +1,13 @@
+{
+  "name": "tetris2048",
+  "version": "1.0.0",
+  "description": "",
+  "dependencies": {
+    "eslint": "^5.8.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": ""
+}
