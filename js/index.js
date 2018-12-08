@@ -9,7 +9,7 @@
     const bigStatusElem = document.getElementById('big-status');
     const smallStatusElem = document.getElementById('small-status');
 
-    require(['./js/game-logic.js'], gameLogic => {
+    require(['./js/game-logic.js', './js/move-events.js'], (gameLogic, bindMoveEvents) => {
       const squares = new Map();
 
       for (let x = 0; x < gameLogic.WIDTH; x++) {
@@ -82,18 +82,6 @@
         let handled = true;
 
         switch (event.key) {
-        case 'ArrowLeft':
-          game.movingBlock.moveLeft();
-          break;
-        case 'ArrowRight':
-          game.movingBlock.moveRight();
-          break;
-        case 'ArrowDown':
-          game.movingBlock.moveDownAllTheWay();
-          break;
-        case ' ':
-          game.movingBlock.moveDown();
-          break;
         case 'F2':
           newGame();
           break;
@@ -111,6 +99,27 @@
           refresh();
           event.preventDefault();
         }
+      });
+
+      bindMoveEvents(document, gameContainer, direction => {
+        console.log('moving:', direction)
+        switch (direction) {
+        case 'left':
+          game.movingBlock.moveLeft();
+          break;
+        case 'right':
+          game.movingBlock.moveRight();
+          break;
+        case 'down':
+          game.movingBlock.moveDown();
+          break;
+        case 'down all the way':
+          game.movingBlock.moveDownAllTheWay();
+          break;
+        default:
+          throw new Error("unknown direction: " + direction);
+        }
+        refresh();
       });
 
       let intervalId = null;
