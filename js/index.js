@@ -10,7 +10,7 @@
     const smallStatusElem = document.getElementById('small-status');
 
     require(['./js/game-logic.js', './js/move-events.js'], (gameLogic, bindMoveEvents) => {
-      const squares = new Map();
+      const squares = {};
 
       for (let x = 0; x < gameLogic.WIDTH; x++) {
         for (let y = 0; y < gameLogic.HEIGHT; y++) {
