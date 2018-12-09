@@ -77,7 +77,7 @@ define([], function() {
     }
 
     get delay() {
-      return 800 - this.score;
+      return 700 - this.score;
     }
 
     addBlock() {
