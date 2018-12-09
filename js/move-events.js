@@ -5,6 +5,7 @@ define([], function() {
     const gameContainer = document.getElementById('game-container');
 
     document.addEventListener('keydown', event => {
+      let handled = true;
       switch (event.key) {
       case 'ArrowLeft':
         callback('left');
@@ -18,6 +19,13 @@ define([], function() {
       case ' ':
         callback('down');
         break;
+      default:
+        handled = false;
+        break;
+      }
+
+      if (handled) {
+        event.preventDefault();
       }
     });
 

@@ -3,7 +3,7 @@ body {
 }
 
 #game-container-container {
-    display: inline-block;
+    float: left;
 }
 
 #game-container {
@@ -71,4 +71,19 @@ body {
 
 #small-status {
     font-size: 20px;
+    text-align: center;
+}
+
+#high-scores {
+    float: left;
+    margin: 20px;
+    padding: 10px;
+    background-color: lightgreen;
+    border: 1px solid black;
+    border-radius: 20px;
+}
+
+#game-and-high-scores + * {
+    clear: left;
+    padding-top: 20px;
 }

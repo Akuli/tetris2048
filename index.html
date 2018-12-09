@@ -10,20 +10,29 @@
 
 <h1>Mixture of tetris and 2048</h1>
 
-<div id="game-container-container">
-    <div id="status-messages-container">
-        <div id="status-messages">
-            <span id="big-status"></span>
-            <span id="small-status"></span>
+<div id="game-and-high-scores">
+    <div id="game-container-container">
+        <div id="status-messages-container">
+            <div id="status-messages">
+                <span id="big-status"></span>
+                <span id="small-status"></span>
+            </div>
         </div>
+        <div id="game-container"></div>
+
+        <p id="score"></p>
+
+        <button id="new-game-button">New Game (F2)</button>
+        <button id="pause-button">Pause (P)</button>
+
     </div>
-    <div id="game-container"></div>
+    <div id="high-scores">
+        <h2>Your high scores</h2>
+        <ul id="high-score-list">
+        </ul>
+        <p id="no-high-scores">There are no high scores yet.</p>
+    </div>
 </div>
-
-<p id="score"></p>
-
-<button id="new-game-button">New Game (F2)</button>
-<button id="pause-button">Pause (P)</button>
 
 <p>
 There's more information about this game

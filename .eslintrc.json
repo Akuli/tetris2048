@@ -27,7 +27,7 @@
         ],
         "strict": "error",
         "no-console": "warn",
-        "prefer-const": "error",
+        "prefer-const": "warn",
         "no-constant-condition": "off",
         "no-empty": "off"
     }

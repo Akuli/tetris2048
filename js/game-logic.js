@@ -1,9 +1,14 @@
-define([], function() {
+define(['./high-score-list.js'], function(addPossibleHighScore) {
   "use strict";
   const WIDTH = 7;
   const HEIGHT = 15;
 
-  const GameState = Object.freeze({ RUNNING: 1, PAUSED: 2, OVER: 3 });
+  const GameState = Object.freeze({
+    RUNNING: 1,
+    PAUSED: 2,
+    GAME_OVER_LOW_SCORE: 3,
+    GAME_OVER_HIGH_SCORE: 4
+  });
 
   class Block {
     constructor(game) {
@@ -140,7 +145,11 @@ define([], function() {
 
       for (let x = 0; x < WIDTH; x++) {
         if (this.frozenSquares[x + ',' + HEIGHT] !== undefined) {
-          this.state = GameState.OVER;
+          if (addPossibleHighScore(this.score)) {
+            this.state = GameState.GAME_OVER_HIGH_SCORE;
+          } else {
+            this.state = GameState.GAME_OVER_LOW_SCORE;
+          }
           break;
         }
       }
