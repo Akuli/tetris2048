@@ -81,6 +81,7 @@ define(['./game-logic.js', './move-events.js', './local-storage.js'], function(g
       pauseButton.textContent = "Pause (P)";
     }
 
+    console.log('setting to localStorage');
     localStorageManager.set('game', JSON.stringify(game.toJSON()));
   }
 
