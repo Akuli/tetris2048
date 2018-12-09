@@ -20,7 +20,10 @@ define([], function() {
 
       const newX = this.x + deltaX;
       const newY = this.y + deltaY;
-      if (newX < 0 || newX >= WIDTH || newY < 0 || this._game.frozenSquares.has(newX + ',' + newY)) {
+      if (newX < 0 ||
+          newX >= WIDTH ||
+          newY < 0 ||
+          this._game.frozenSquares[newX + ',' + newY] !== undefined) {
         return false;
       }
 
@@ -47,10 +50,9 @@ define([], function() {
   class Game {
     constructor() {
       this.movingBlock = null;
-      this.frozenSquares = new Map();
-      this.score = 0;
-      this.addBlock();
+      this.frozenSquares = {};
       this.state = GameState.RUNNING;
+      this.addBlock();
 
       this._mergePlaces = [];
       for (let x = 0; x < WIDTH; x++) {
@@ -62,6 +64,18 @@ define([], function() {
 
     }
 
+    get score() {
+      let result = 0;
+      for (let x = 0; x < WIDTH; x++) {
+        for (let y = 0; y < HEIGHT; y++) {
+          if (this.frozenSquares[x + ',' + y] !== undefined) {
+            result += this.frozenSquares[x + ',' + y];
+          }
+        }
+      }
+      return result;
+    }
+
     get delay() {
       return 800 - this.score;
     }
@@ -71,7 +85,7 @@ define([], function() {
     }
 
     numberAt(x, y) {
-      const number = this.frozenSquares.get(x + ',' + y);
+      const number = this.frozenSquares[x + ',' + y];
       if (number !== undefined) {
         return number;
       }
@@ -82,7 +96,7 @@ define([], function() {
     }
 
     freezeMovingBlock() {
-      this.frozenSquares.set(this.movingBlock.x + ',' + this.movingBlock.y, this.movingBlock.number);
+      this.frozenSquares[this.movingBlock.x + ',' + this.movingBlock.y] = this.movingBlock.number;
     }
 
     // this is O(n^wat)
@@ -92,16 +106,16 @@ define([], function() {
 
         shuffle(this._mergePlaces);
         for (const [x1, y1, x2, y2] of this._mergePlaces) {
-          const number1 = this.frozenSquares.get(x1 + ',' + y1);
-          const number2 = this.frozenSquares.get(x2 + ',' + y2);
+          const number1 = this.frozenSquares[x1 + ',' + y1];
+          const number2 = this.frozenSquares[x2 + ',' + y2];
           if (number1 === undefined || number2 === undefined || number1 !== number2) {
             continue;
           }
 
           const points = [ x1 + ',' + y1, x2 + ',' + y2 ];
           shuffle(points);
-          this.frozenSquares.set(points[0], this.frozenSquares.get(points[0]) * 2);
-          this.frozenSquares.delete(points[1]);
+          this.frozenSquares[points[0]] *= 2;
+          delete this.frozenSquares[points[1]];
           didSomething = true;
           break;
         }
@@ -110,15 +124,6 @@ define([], function() {
           return;
         }
       }
-    }
-
-    _gameOver() {
-      for (let x = 0; x < WIDTH; x++) {
-        if (this.frozenSquares.has(x + ',' + HEIGHT)) {
-          return true;
-        }
-      }
-      return false;
     }
 
     doSomething() {
@@ -132,10 +137,12 @@ define([], function() {
       this.freezeMovingBlock();
       this.mergeBlocks();
       this.addBlock();
-      this.score++;
 
-      if (this._gameOver()) {
-        this.state = GameState.OVER;
+      for (let x = 0; x < WIDTH; x++) {
+        if (this.frozenSquares[x + ',' + HEIGHT] !== undefined) {
+          this.state = GameState.OVER;
+          break;
+        }
       }
     }
 
@@ -145,6 +152,31 @@ define([], function() {
       } else if (this.state === GameState.PAUSED) {
         this.state = GameState.RUNNING;
       }
+    }
+
+    toJSON() {
+      return {
+        movingBlockX: this.movingBlock.x,
+        movingBlockY: this.movingBlock.y,
+        frozenSquares: this.frozenSquares,
+        state: this.state
+      };
+    }
+
+    static fromJSON(json) {
+      if (typeof json.movingBlockX !== 'number' ||
+          typeof json.movingBlockY !== 'number' ||
+          typeof json.frozenSquares !== 'object' ||   // TODO: validate better?
+          !Object.values(GameState).includes(json.state)) {
+        throw new Error("invalid game state json: " + json);
+      }
+
+      const game = new Game();
+      game.movingBlock.x = json.movingBlockX;
+      game.movingBlock.y = json.movingBlockY;
+      game.frozenSquares = json.frozenSquares;
+      game.state = json.state;
+      return game;
     }
   }
 

@@ -29,6 +29,7 @@
       }
 
       let game = null;
+      let useLocalStorage = true;   // disabling is mostly for running this thing from a file
 
       const NUMBER_OF_COLORS = 7;
 
@@ -49,6 +50,15 @@
             } else {
               square.childNodes[0].textContent = number;
               square.classList.add('color' + ( Math.round(Math.log2(number)) % NUMBER_OF_COLORS ));
+            }
+          }
+
+          if (useLocalStorage) {
+            try {
+              window.localStorage.setItem('tetris2048-game', JSON.stringify(game.toJSON()));
+            } catch(e) {
+              console.log(e);
+              useLocalStorage = false;
             }
           }
         }
@@ -83,7 +93,7 @@
 
         switch (event.key) {
         case 'F2':
-          newGame();
+          setCurrentGame(new gameLogic.Game());
           break;
         case 'P':
         case 'p':
@@ -134,19 +144,34 @@
         }
       }
 
-      function newGame() {
+      function setCurrentGame(theGame) {
         if (intervalId !== null) {
           window.clearInterval(intervalId);
         }
 
-        game = new gameLogic.Game();
+        game = theGame;
         refresh();
         intervalId = window.setTimeout(onTimeout, game.delay);
       }
 
-      newGame();
+      function loadGameFromLocalStorage() {
+        try {
+          const stored = window.localStorage.getItem('tetris2048-game');
+          if (typeof stored === 'string') {   // not e.g. null
+            return gameLogic.Game.fromJSON(JSON.parse(stored));
+          }
+        } catch(e) {
+          console.log(e);   // eslint-disable-line no-console
+        }
 
-      document.getElementById('new-game-button').addEventListener('click', newGame);
+        return new gameLogic.Game();
+      }
+
+      setCurrentGame(loadGameFromLocalStorage());
+
+      document.getElementById('new-game-button').addEventListener('click', () => {
+        setCurrentGame(new gameLogic.Game());
+      });
       document.getElementById('pause-button').addEventListener('click', () => {
         game.togglePause();
         refresh();
