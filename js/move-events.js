@@ -42,8 +42,8 @@ define([], function() {
 
     gameContainer.addEventListener('touchmove', event => {
       if (event.targetTouches.length === 1) {
-        let deltaX = event.changedTouches[0].clientX - touchStartClientX;
-        let deltaY = event.changedTouches[0].clientY - touchStartClientY;
+        let deltaX = event.targetTouches[0].clientX - touchStartClientX;
+        let deltaY = event.targetTouches[0].clientY - touchStartClientY;
 
         while (deltaX < -squareWidth) {
           callback('left');
