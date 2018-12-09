@@ -81,15 +81,15 @@ define(['./game-logic.js', './move-events.js', './local-storage.js'], function(g
       pauseButton.textContent = "Pause (P)";
     }
 
-    console.log('setting to localStorage');
     localStorageManager.set('game', JSON.stringify(game.toJSON()));
   }
 
   let intervalId = null;
 
   function onTimeout() {
-    game.doSomething();
-    refresh();
+    if (game.doSomething()) {
+      refresh();
+    }
 
     if (game.state === gameLogic.GameState.GAME_OVER_LOW_SCORE ||
         game.state === gameLogic.GameState.GAME_OVER_HIGH_SCORE) {

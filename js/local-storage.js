@@ -1,3 +1,4 @@
+// TODO: localStorage stuff breaks if more than one tab of this game is open
 define([], function() {
   "use strict";
 
@@ -10,7 +11,6 @@ define([], function() {
 
       if (useLocalStorage) {
         try {
-          console.log('setting:', key, value);
           window.localStorage.setItem('tetris2048-' + key, value);
         } catch(e) {
           console.log(e);   // eslint-disable-line no-console

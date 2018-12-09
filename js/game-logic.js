@@ -131,13 +131,14 @@ define(['./high-score-list.js'], function(addPossibleHighScore) {
       }
     }
 
+    // returns true if something was actually done, and false otherwise
     doSomething() {
       if (this.state !== GameState.RUNNING) {
-        return;
+        return false;
       }
 
       if (this.movingBlock.moveDown()) {
-        return;
+        return true;
       }
       this.freezeMovingBlock();
       this.mergeBlocks();
@@ -153,6 +154,8 @@ define(['./high-score-list.js'], function(addPossibleHighScore) {
           break;
         }
       }
+
+      return true;
     }
 
     togglePause() {
