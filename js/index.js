@@ -101,8 +101,7 @@
         }
       });
 
-      bindMoveEvents(document, gameContainer, direction => {
-        console.log('moving:', direction)
+      bindMoveEvents(direction => {
         switch (direction) {
         case 'left':
           game.movingBlock.moveLeft();

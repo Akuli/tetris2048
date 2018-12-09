@@ -1,9 +1,10 @@
 define([], function() {
   "use strict";
 
-  function bindMoveEvents(keyElem, touchElem, callback) {
-    console.log("boo");
-    keyElem.addEventListener('keydown', event => {
+  function bindMoveEvents(callback) {
+    const gameContainer = document.getElementById('game-container');
+
+    document.addEventListener('keydown', event => {
       switch (event.key) {
       case 'ArrowLeft':
         callback('left');
@@ -22,41 +23,52 @@ define([], function() {
 
     // https://github.com/gabrielecirulli/2048/blob/master/js/keyboard_input_manager.js
     let touchStartClientX, touchStartClientY;
+    let squareWidth, squareHeight;
 
-    touchElem.addEventListener('touchstart', event => {
+    gameContainer.addEventListener('touchstart', event => {
       if (event.targetTouches.length === 1) {
-        console.log('touch starts')
         touchStartClientX = event.targetTouches[0].clientX;
         touchStartClientY = event.targetTouches[0].clientY;
+
+        // the size of the squares is specified in the css, so i don't want to
+        // have it here, this doesn't break if it's changed
+        const style = window.getComputedStyle(gameContainer);
+        squareWidth = +( /^([0-9]+)px$/.exec(style.gridAutoColumns)[1] );
+        squareHeight = +( /^([0-9]+)px$/.exec(style.gridAutoRows)[1] );
+
         event.preventDefault();
       }
     });
 
-    touchElem.addEventListener('touchmove', event => event.preventDefault());
+    gameContainer.addEventListener('touchmove', event => {
+      if (event.targetTouches.length === 1) {
+        let deltaX = event.changedTouches[0].clientX - touchStartClientX;
+        let deltaY = event.changedTouches[0].clientY - touchStartClientY;
 
-    touchElem.addEventListener('touchend', event => {
-      if (touchStartClientX !== null && touchStartClientY !== null) {
-        const deltaX = event.changedTouches[0].clientX - touchStartClientX;
-        const deltaY = event.changedTouches[0].clientY - touchStartClientY;
-        console.log(deltaX, deltaY);
-
-        if (Math.hypot(deltaX, deltaY) > 10) {
-          if (Math.abs(deltaX) > Math.abs(deltaY)) {
-            // something horizontal
-            if (deltaX > 0) {
-              callback('right');
-            } else {
-              callback('left');
-            }
-          } else {
-            if (deltaY > 0) {
-              callback('down');
-            }
-            // else it's up, which is ignored
-          }
+        while (deltaX < -squareWidth) {
+          callback('left');
+          touchStartClientX -= squareWidth;
+          deltaX += squareWidth;
         }
-      }
+        while (deltaX > squareWidth) {
+          callback('right');
+          touchStartClientX += squareWidth;
+          deltaX -= squareHeight;
+        }
+        while (deltaY > squareHeight) {
+          callback('down');
+          touchStartClientY += squareHeight;
+          deltaY -= squareHeight;
+        }
 
+        event.preventDefault();
+      }
+    });
+
+    gameContainer.addEventListener('touchend', event => {
+      if (touchStartClientX !== null && touchStartClientY !== null) {
+        event.preventDefault();
+      }
       touchStartClientX = touchStartClientY = null;
     });
   }
