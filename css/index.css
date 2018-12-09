@@ -56,12 +56,12 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    min-height: 100px;
     z-index: 3;
 }
 
 #status-messages.showing {
     background-image: radial-gradient(white, transparent);
+    min-height: 100px;
 }
 
 #big-status {
